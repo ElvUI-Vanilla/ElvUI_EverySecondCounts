@@ -1,13 +1,18 @@
-local E, L, V, P, G = unpack(ElvUI)
-local ESC = E:GetModule("EverySecondCounts")
-local LSM = LibStub("LibSharedMedia-3.0")
-local EP = LibStub("LibElvUIPlugin-1.0")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local ESC = E:GetModule("EverySecondCounts");
+local LSM = LibStub("LibSharedMedia-3.0");
+local EP = LibStub("LibElvUIPlugin-1.0");
+
+--Cache global variables
+--Lua functions
+local format = string.format
+local ceil, floor, mod = math.ceil, math.floor, math.mod
+--WoW API / Variables
+local CreateFrame = CreateFrame
+local GetTime = GetTime
+
 local threshhold
 local mmSSthreshold
-
-local format = string.format
-local floor = math.floor
-local ceil = math.ceil
 
 -- Timer Colors for Cooldown
 local TimeColors = {
@@ -48,7 +53,7 @@ function ESC:GetTimeInfo(s, threshhold, mmSSthreshold)
 		end
 	elseif s < HOUR then
 		if mmSSthreshold and s < mmSSthreshold then
-			return s/MINUTE, 5, 0.51, s%MINUTE
+			return s/MINUTE, 5, 0.51, mod(s, MINUTE)
 		else
 			local minutes = floor((s/MINUTE)+.5)
 			return ceil(s / MINUTE), 2, minutes > 1 and (s - (minutes*MINUTE - HALFMINUTEISH)) or (s - MINUTEISH)
@@ -77,7 +82,7 @@ local function Cooldown_OnUpdate(cd, elapsed)
 		else
 			local timervalue, timervalue2, formatid
 			timervalue, formatid, cd.nextUpdate, timervalue2 = ESC:GetTimeInfo(remain, threshold, mmSSthreshold)
-			cd.text:SetFormattedText(("%s%s|r"):format(TimeColors[formatid], TimeFormats[formatid][2]), timervalue, timervalue2)
+			cd.text:SetText(format("%s%s|r", TimeColors[formatid], format(TimeFormats[formatid][2], timervalue, timervalue2)))
 
 			-- If next update is below mmSSthreshold then update when we reach the threshold
 			if (remain - cd.nextUpdate) < mmSSthreshold then
@@ -96,22 +101,22 @@ function E:CreateCooldownTimer(parent)
 
 	local timer = CreateFrame("Frame", nil, scaler) timer:Hide()
 	timer:SetAllPoints()
-	timer:SetScript("OnUpdate", Cooldown_OnUpdate)
+	timer:SetScript("OnUpdate", function() Cooldown_OnUpdate(this, arg1) end)
 
 	local text = timer:CreateFontString(nil, "OVERLAY")
 	text:SetPoint(E.db.ESC.textPosition, E.db.ESC.textOffsetX, E.db.ESC.textOffsetY)
 	text:SetJustifyH("CENTER")
 	timer.text = text
 
-	self:Cooldown_OnSizeChanged(timer, parent:GetSize())
-	parent:SetScript("OnSizeChanged", function(_, ...) self:Cooldown_OnSizeChanged(timer, ...) end)
+	self:Cooldown_OnSizeChanged(timer, parent:GetWidth(), parent:GetHeight())
+	parent:SetScript("OnSizeChanged", function() self:Cooldown_OnSizeChanged(timer, parent:GetWidth(), parent:GetHeight()) end)
 
 	parent.timer = timer
 	return timer
 end
 
 -- Copied from ElvUI, modified to allow for customizable font size
-function E:Cooldown_OnSizeChanged(cd, width, height)
+function E:Cooldown_OnSizeChanged(cd, width)
 	local fontScale = floor(width +.5) / ICON_SIZE
 	local override = cd:GetParent():GetParent().SizeOverride
 	if override then
@@ -127,7 +132,7 @@ function E:Cooldown_OnSizeChanged(cd, width, height)
 		cd:Hide()
 	else
 		cd:Show()
-		cd.text:FontTemplate(LSM:Fetch("font", E.db.ESC.font), fontScale * E.db.ESC.fontSize, E.db.ESC.fontOutline)
+		E:FontTemplate(cd.text, LSM:Fetch("font", E.db.ESC.font), fontScale * E.db.ESC.fontSize, E.db.ESC.fontOutline)
 		if cd.enabled then
 			self:Cooldown_ForceUpdate(cd)
 		end

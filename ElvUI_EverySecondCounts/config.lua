@@ -1,5 +1,11 @@
-local E, L, V, P, G = unpack(ElvUI)
-local ESC = E:NewModule("EverySecondCounts","AceEvent-3.0")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local ESC = E:NewModule("EverySecondCounts", "AceEvent-3.0");
+
+--Cache global variables
+--Lua functions
+
+--WoW API / Variables
+local FONT_SIZE, NONE = FONT_SIZE, NONE
 
 -- Defaults
 P["ESC"] = {
@@ -14,10 +20,10 @@ P["ESC"] = {
 }
 
 function ESC:InsertOptions()
-	E.Options.args.actionbar.args.ESC = {
+	E.Options.args.ESC = {
 		order = 2000,
 		type = "group",
-		name = "Every Second Counts",
+		name = "|cff4beb2cEvery Second Counts|r",
 		args = {
 			cooldowns = {
 				order = 1,
@@ -49,7 +55,7 @@ function ESC:InsertOptions()
 						desc = L["Threshold (in seconds) before text is shown in the MM:SS format. Set to -1 to never change to this format."],
 						min = -1, max = 300, step = 1,
 						get = function(info) return E.db.ESC.mmSSthreshold end,
-						set = function(info, value) E.db.ESC.mmSSthreshold = value ESC:UpdateCooldownSettings() end,
+						set = function(info, value) E.db.ESC.mmSSthreshold = value; ESC:UpdateCooldownSettings() end,
 					},
 					spacer = {
 						order = 3,
@@ -63,16 +69,16 @@ function ESC:InsertOptions()
 						dialogControl = "LSM30_Font",
 						values = AceGUIWidgetLSMlists.font,
 						get = function(info) return E.db.ESC.font end,
-						set = function(info, value) E.db.ESC.font = value E:StaticPopup_Show("CONFIG_RL") end,
+						set = function(info, value) E.db.ESC.font = value; E:StaticPopup_Show("CONFIG_RL") end,
 					},
 					fontOutline = {
 						order = 5,
 						type = "select",
 						name = L["Font Outline"],
 						get = function(info) return E.db.ESC.fontOutline end,
-						set = function(info, value) E.db.ESC.fontOutline = value E:StaticPopup_Show("CONFIG_RL") end,
+						set = function(info, value) E.db.ESC.fontOutline = value; E:StaticPopup_Show("CONFIG_RL") end,
 						values = {
-							["NONE"] = L["None"],
+							["NONE"] = NONE,
 							["OUTLINE"] = "OUTLINE",
 							["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 							["THICKOUTLINE"] = "THICKOUTLINE",
@@ -81,11 +87,11 @@ function ESC:InsertOptions()
 					fontSize = {
 						order = 6,
 						type = "range",
-						name = L["Font Size"],
+						name = FONT_SIZE,
 						desc = L["Sets the size of the timers."],
 						min = 10, max = 30, step = 1,
 						get = function(info) return E.db.ESC.fontSize end,
-						set = function(info, value) E.db.ESC.fontSize = value E:StaticPopup_Show("CONFIG_RL") end,
+						set = function(info, value) E.db.ESC.fontSize = value; E:StaticPopup_Show("CONFIG_RL") end,
 					},
 					spacer2 = {
 						order = 7,
@@ -97,7 +103,7 @@ function ESC:InsertOptions()
 						type = "select",
 						name = L["Position"],
 						get = function(info) return E.db.ESC.textPosition end,
-						set = function(info, value) E.db.ESC.textPosition = value E:StaticPopup_Show("CONFIG_RL") end,
+						set = function(info, value) E.db.ESC.textPosition = value; E:StaticPopup_Show("CONFIG_RL") end,
 						values = {
 							["TOPLEFT"] = "TOPLEFT",
 							["LEFT"] = "LEFT",
@@ -116,7 +122,7 @@ function ESC:InsertOptions()
 						name = L["X-Offset"],
 						min = -10, max = 10, step = 1,
 						get = function(info) return E.db.ESC.textOffsetX end,
-						set = function(info, value) E.db.ESC.textOffsetX = value E:StaticPopup_Show("CONFIG_RL") end,
+						set = function(info, value) E.db.ESC.textOffsetX = value; E:StaticPopup_Show("CONFIG_RL") end,
 					},
 					textOffsetY = {
 						order = 10,
@@ -124,7 +130,7 @@ function ESC:InsertOptions()
 						name = L["Y-Offset"],
 						min = -10, max = 10, step = 1,
 						get = function(info) return E.db.ESC.textOffsetY end,
-						set = function(info, value) E.db.ESC.textOffsetY = value E:StaticPopup_Show("CONFIG_RL") end,
+						set = function(info, value) E.db.ESC.textOffsetY = value; E:StaticPopup_Show("CONFIG_RL") end,
 					},
 				},
 			},

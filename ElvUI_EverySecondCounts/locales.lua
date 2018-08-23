@@ -4,7 +4,6 @@ local L = LibStub("AceLocale-3.0"):NewLocale("ElvUI", "enUS", true)
 if not L then return end
 L["Color for timers in the MM:SS format"] = true
 L["Cooldowns"] = true
-L["Font Size"] = true
 L["MM:SS Color"] = true
 L["MM:SS Threshold"] = true
 L["Sets the size of the timers."] = true

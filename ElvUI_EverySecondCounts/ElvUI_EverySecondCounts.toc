@@ -1,4 +1,4 @@
-## Interface: 20400
+## Interface: 11200
 ## Author: Blazeflack
 ## Version: 1.16
 ## Title: |cffA11313E|r|cffC4C4C4lvUI|r |cffA11313E|r|cffC4C4C4very|r |cffA11313S|r|cffC4C4C4econd|r |cffA11313C|r|cffC4C4C4ounts|r
